@@ -7,3 +7,8 @@ to thrink thru the design process to make the integration easier.
 
 I think throuhout the process I struggled trying to optimize too early as I was
 coding which led to some roadblocks and reworks along the way. 
+
+referenced https://github.com/jonkchan/Splendor-Java
+for the card inputs and colors
+
+work in progress...
