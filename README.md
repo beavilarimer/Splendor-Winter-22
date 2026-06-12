@@ -2,10 +2,18 @@
 
 A from-scratch implementation of the board game [Splendor](https://boardgamegeek.com/boardgame/148228/splendor) in Java, built as an OOP practice project. Supports 2–4 players with full rules.
 
+## How to run
+
+Requires Java 21 and Maven.
+
+```bash
+mvn javafx:run
+```
+
 ## Project status
 
 - [x] Model layer (Phase 1) — complete
-- [ ] Game logic (Phase 2) — in progress
+- [x] Game logic (Phase 2) — in progress
 - [ ] JavaFX GUI (Phase 3) — planned
 
 ## Model layer

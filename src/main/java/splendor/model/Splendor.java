@@ -138,8 +138,9 @@ public class Splendor {
         return true;
     }
 
-    // level = -1, slot = -1 signals buying from the player's reserved card
+    // level = -1, slot = -1 signals buying the player's own reserved card (still on the table)
     public boolean buyCard(Player player, Card card, int level, int slot) {
+        if (card.getReservedBy() != null && card.getReservedBy() != player) return false;
         if (!canAfford(player, card)) return false;
 
         payForCard(player, card);
@@ -147,6 +148,15 @@ public class Splendor {
         player.updatePrestige(card.getPrestige());
 
         if (slot == -1) {
+            // Find and remove the card from the table, then refill from its deck
+            outer: for (int lvl = 0; lvl < LEVELS; lvl++) {
+                for (int s = 0; s < OPEN_CARDS; s++) {
+                    if (table[lvl][s] == card) {
+                        table[lvl][s] = decks[lvl].getSize() > 0 ? decks[lvl].removeCard() : null;
+                        break outer;
+                    }
+                }
+            }
             player.clearReserved();
         } else {
             table[level][slot] = (decks[level].getSize() > 0)
@@ -161,12 +171,10 @@ public class Splendor {
     public boolean reserveCard(Player player, int level, int slot) {
         if (player.hasReserved()) return false;
         if (table[level][slot] == null) return false;
+        if (table[level][slot].getReservedBy() != null) return false;
 
         player.reserveCard(table[level][slot]);
-
-        table[level][slot] = (decks[level].getSize() > 0)
-            ? decks[level].removeCard()
-            : null;
+        // Card stays on the table — not replaced
 
         if (chipBank[5] > 0 && player.getChipCount() < 10) {
             chipBank[5]--;

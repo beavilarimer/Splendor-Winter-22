@@ -1,0 +1,13 @@
+splendor/model/Player.class
+splendor/controller/GameController.class
+splendor/model/Deck.class
+splendor/view/PlayerPanelView.class
+splendor/model/Card.class
+splendor/view/BoardView.class
+splendor/view/NobleTileView.class
+splendor/view/MainApp.class
+splendor/view/StartView.class
+splendor/view/ChipBankView.class
+splendor/view/CardView.class
+splendor/model/Noble.class
+splendor/model/Splendor.class

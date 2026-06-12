@@ -1,0 +1,13 @@
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/controller/GameController.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/model/Card.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/model/Deck.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/model/Noble.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/model/Player.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/model/Splendor.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/BoardView.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/CardView.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/ChipBankView.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/MainApp.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/NobleTileView.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/PlayerPanelView.java
+/Users/bavilarimer/Dev/Splendor-Winter-22/src/main/java/splendor/view/StartView.java

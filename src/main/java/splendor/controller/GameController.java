@@ -53,7 +53,7 @@ public class GameController {
 
         if (ok) {
             selectedChips.clear();
-            if (onRefresh != null) onRefresh.run();
+            endTurn();
         }
         return ok;
     }
@@ -68,13 +68,13 @@ public class GameController {
 
     public boolean buyCard(Card card, int level, int slot) {
         boolean ok = game.buyCard(currentPlayer(), card, level, slot);
-        if (ok && onRefresh != null) onRefresh.run();
+        if (ok) endTurn();
         return ok;
     }
 
     public boolean reserveCard(int level, int slot) {
         boolean ok = game.reserveCard(currentPlayer(), level, slot);
-        if (ok && onRefresh != null) onRefresh.run();
+        if (ok) endTurn();
         return ok;
     }
 

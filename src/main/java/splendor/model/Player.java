@@ -34,10 +34,11 @@ public class Player {
 
     public void reserveCard(Card card) {
         this.reservedCard = card;
-        card.updateReserved();
+        card.setReservedBy(this);
     }
 
     public void clearReserved() {
+        if (reservedCard != null) reservedCard.clearReservedBy();
         this.reservedCard = null;
     }
 

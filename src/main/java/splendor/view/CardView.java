@@ -31,11 +31,17 @@ public class CardView extends VBox {
         "diamond", "sapphire", "emerald", "ruby", "onyx"
     };
 
-    public CardView(splendor.model.Card card, Runnable onClick) {
+    public CardView(splendor.model.Card card, String reservedBy, boolean clickable, Runnable onClick) {
         setMinSize(108, 148);
         setMaxSize(108, 148);
-        setStyle("-fx-border-color: #999; -fx-border-radius: 6; -fx-background-radius: 6; " +
-                 "-fx-background-color: #FAFAFA; -fx-cursor: hand;");
+
+        boolean isReserved = reservedBy != null;
+        String borderColor = isReserved ? "#FF9800" : "#999";
+        String bgColor     = isReserved ? "#FFF8E1" : "#FAFAFA";
+        String cursor      = clickable  ? "hand"    : "default";
+        setStyle("-fx-border-color: " + borderColor + "; -fx-border-radius: 6; -fx-background-radius: 6; " +
+                 "-fx-background-color: " + bgColor + "; -fx-cursor: " + cursor + ";" +
+                 (!clickable ? " -fx-opacity: 0.75;" : ""));
 
         String hex    = COLOR_HEX.getOrDefault(card.getColor(), "#CCC");
         String symbol = GEM_SYMBOL.getOrDefault(card.getColor(), "?");
@@ -83,7 +89,15 @@ public class CardView extends VBox {
         getChildren().addAll(header, body);
         VBox.setVgrow(body, Priority.ALWAYS);
 
-        if (onClick != null) {
+        if (reservedBy != null) {
+            Label tag = new Label("🔒 " + reservedBy);
+            tag.setMaxWidth(Double.MAX_VALUE);
+            tag.setStyle("-fx-font-size: 9; -fx-text-fill: #E65100; -fx-background-color: #FFE0B2; " +
+                         "-fx-padding: 2 4 2 4; -fx-background-radius: 0 0 6 6;");
+            getChildren().add(tag);
+        }
+
+        if (onClick != null && clickable) {
             setOnMouseClicked(e -> onClick.run());
         }
     }

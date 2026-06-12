@@ -1,14 +1,14 @@
 package splendor.model;
 
 public class Card {
-    private boolean reserved;
+    private Player reservedBy;
     private int prestige;
     private String color;
     private int colorIdx;
     private int[] chipCost;
 
     Card(String color, int[] chipCost, int prestige) {
-        this.reserved = false;
+        this.reservedBy = null;
         this.prestige = prestige;
         this.color = color;
         this.colorIdx = colorToIndex(color);
@@ -26,12 +26,16 @@ public class Card {
         }
     }
 
-    public void updateReserved() {
-        this.reserved = true;
+    public void setReservedBy(Player player) {
+        this.reservedBy = player;
     }
 
-    public boolean getReserved() {
-        return reserved;
+    public void clearReservedBy() {
+        this.reservedBy = null;
+    }
+
+    public Player getReservedBy() {
+        return reservedBy;
     }
 
     public int getPrestige() {

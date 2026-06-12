@@ -4,8 +4,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import splendor.controller.GameController;
 import splendor.model.Card;
@@ -17,7 +15,6 @@ public class BoardView extends BorderPane {
 
     private final GameController controller;
     private Button takeChipsBtn;
-    private Button endTurnBtn;
 
     public BoardView(GameController controller) {
         this.controller = controller;
@@ -86,7 +83,10 @@ public class BoardView extends BorderPane {
                 Card card = table[lvl][slot];
                 final int s = slot;
                 if (card != null) {
-                    CardView cv = new CardView(card, () -> showCardPopup(card, level, s));
+                    splendor.model.Player reservingPlayer = card.getReservedBy();
+                    String reservedByName = reservingPlayer != null ? reservingPlayer.getName() : null;
+                    boolean clickable = reservingPlayer == null || reservingPlayer == controller.currentPlayer();
+                    CardView cv = new CardView(card, reservedByName, clickable, () -> showCardPopup(card, level, s));
                     row.getChildren().add(cv);
                 } else {
                     row.getChildren().add(CardView.emptySlot());
@@ -131,11 +131,7 @@ public class BoardView extends BorderPane {
             bar.getChildren().add(buyResBtn);
         }
 
-        endTurnBtn = new Button("End Turn ▶");
-        endTurnBtn.setStyle("-fx-background-color: #1E88E5; -fx-text-fill: white; -fx-font-weight: bold;");
-        endTurnBtn.setOnAction(e -> controller.endTurn());
-
-        bar.getChildren().addAll(spacer, takeChipsBtn, endTurnBtn);
+        bar.getChildren().addAll(spacer, takeChipsBtn);
         return bar;
     }
 
@@ -153,31 +149,27 @@ public class BoardView extends BorderPane {
         Label title = new Label(card.getColor() + (card.getPrestige() > 0 ? " — " + card.getPrestige() + " ★" : ""));
         title.setStyle("-fx-font-weight: bold;");
 
-        Button buyBtn = new Button("Buy");
-        buyBtn.setDisable(!controller.canAfford(card));
-        buyBtn.setOnAction(e -> {
-            popup.hide();
-            controller.buyCard(card, level, slot);
-        });
+        Player current    = controller.currentPlayer();
+        Player reservedBy = card.getReservedBy();
 
-        Button reserveBtn = new Button("Reserve");
-        reserveBtn.setDisable(controller.currentPlayer().hasReserved());
-        reserveBtn.setOnAction(e -> {
-            popup.hide();
-            controller.reserveCard(level, slot);
-        });
-
-        // Buy reserved card (only relevant if this card IS the reserved card)
-        Player current = controller.currentPlayer();
-        if (current.hasReserved() && current.getReservedCard() == card) {
-            Button buyResBtn = new Button("Buy (reserved)");
+        if (reservedBy != null && reservedBy != current) {
+            Label info = new Label("Reserved by " + reservedBy.getName());
+            info.setStyle("-fx-text-fill: #E65100;");
+            box.getChildren().addAll(title, info);
+        } else if (reservedBy == current) {
+            Button buyResBtn = new Button("Buy (your reserve)");
             buyResBtn.setDisable(!controller.canAfford(card));
-            buyResBtn.setOnAction(e -> {
-                popup.hide();
-                controller.buyCard(card, -1, -1);
-            });
+            buyResBtn.setOnAction(e -> { popup.hide(); controller.buyCard(card, -1, -1); });
             box.getChildren().addAll(title, buyResBtn);
         } else {
+            Button buyBtn = new Button("Buy");
+            buyBtn.setDisable(!controller.canAfford(card));
+            buyBtn.setOnAction(e -> { popup.hide(); controller.buyCard(card, level, slot); });
+
+            Button reserveBtn = new Button("Reserve");
+            reserveBtn.setDisable(current.hasReserved());
+            reserveBtn.setOnAction(e -> { popup.hide(); controller.reserveCard(level, slot); });
+
             box.getChildren().addAll(title, buyBtn, reserveBtn);
         }
 
