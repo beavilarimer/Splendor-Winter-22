@@ -30,21 +30,28 @@ public class Splendor {
     }
 
     private void genNobles(int playerCount){
-        Noble[] nobles = new Noble[NUM_NOBLES];
+        Noble[] allNobles = new Noble[NUM_NOBLES];
         Random random = new Random();
         Noble temp;
 
         for (int i = 0; i < NUM_NOBLES; i++){
-            nobles[i] = new Noble(nobleCosts[i]);
-        }
-    
-        for(int i = 0; i < NUM_NOBLES; i++){
-            int newIdx = random.nextInt(NUM_NOBLES - i);
-            temp = nobles[i];
-            this.nobles[i] = this.nobles[newIdx];
-            this.nobles[newIdx] = temp;
+            allNobles[i] = new Noble(nobleCosts[i]);
         }
 
+        // Fisher-Yates shuffle on the local array before slicing
+        for (int i = 0; i < NUM_NOBLES - 1; i++){
+            int newIdx = i + random.nextInt(NUM_NOBLES - i);
+            temp = allNobles[i];
+            allNobles[i] = allNobles[newIdx];
+            allNobles[newIdx] = temp;
+        }
+
+        // keep exactly playerCount + 1 nobles per the rules
+        int noblesInPlay = playerCount + 1;
+        this.nobles = new Noble[noblesInPlay];
+        for (int i = 0; i < noblesInPlay; i++){
+            this.nobles[i] = allNobles[i];
+        }
     }
 
     private Deck genEasy(){

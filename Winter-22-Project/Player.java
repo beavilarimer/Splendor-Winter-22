@@ -1,19 +1,17 @@
-//String[] typesOfGems = { "diamond", "sapphire", "emerald", "ruby", "onyx" };
-//String[] typesOfGems = { "white", "blue", "green", "red", "black" };
-
-
-public class Player{
-    private boolean reserved;    
+public class Player {
+    private String name;
+    private Card reservedCard;
     private int chipCount;
     private int prestige;
 
     private int[] chipTracker;
     private int[] cardTracker;
-    
+
     public static int playerCount;
 
-    Player(String name){
-        this.reserved = false;
+    Player(String name) {
+        this.name = name;
+        this.reservedCard = null;
         this.chipCount = 0;
         this.prestige = 0;
         this.chipTracker = new int[6];
@@ -21,59 +19,67 @@ public class Player{
         playerCount++;
     }
 
-    /* settters 
-     * can be used for all chip exchange just make sure to update the signs elsewhere
-    */
-    public void updateChips(int[] difference){
-        for(int i = 0; i < chipTracker.length; i++){
+    public void updateChips(int[] difference) {
+        for (int i = 0; i < chipTracker.length; i++) {
             this.chipTracker[i] += difference[i];
         }
     }
 
-    public void updateCards(Card card){
-        int color = card.getCardColor();
-        this.cardTracker[color] += 1;
+    public void updateCards(Card card) {
+        int colorIdx = card.getCardColor();
+        this.cardTracker[colorIdx] += 1;
     }
 
-    public void updateReserved(){
-        this.reserved = true;
+    public void reserveCard(Card card) {
+        this.reservedCard = card;
+        card.updateReserved();
     }
 
-    public void updateGold(int difference){
+    public void clearReserved() {
+        this.reservedCard = null;
+    }
+
+    public void updateGold(int difference) {
         this.chipTracker[5] += difference;
     }
 
-    public void updateChipCount(int difference){
+    public void updateChipCount(int difference) {
         this.chipCount += difference;
     }
 
-    public void updatePrestige(int prestige){
+    public void updatePrestige(int prestige) {
         this.prestige += prestige;
     }
 
-    //getters
-    public boolean getReserved(){
-        return reserved;
+    public boolean hasReserved() {
+        return reservedCard != null;
     }
 
-    public int getGold(){
+    public Card getReservedCard() {
+        return reservedCard;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getGold() {
         return chipTracker[5];
     }
 
-    public int getChipCount(){
+    public int getChipCount() {
         return chipCount;
     }
 
-    public int getPrestige(){
+    public int getPrestige() {
         return prestige;
     }
 
-    public int[] getChipTracker(){
+    public int[] getChipTracker() {
         return chipTracker;
     }
 
-    public int[] getCardTracker(){
+    public int[] getCardTracker() {
         return cardTracker;
     }
-
 }
