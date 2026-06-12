@@ -1,4 +1,6 @@
 public class Noble {
+    public static final int PRESTIGE = 3;
+
     private int[] cardCost;
     private boolean inPlay;
 
