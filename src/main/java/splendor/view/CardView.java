@@ -3,6 +3,7 @@ package splendor.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -31,6 +32,11 @@ public class CardView extends VBox {
         "diamond", "sapphire", "emerald", "ruby", "onyx"
     };
 
+    private final String baseStyle;
+    private final String hoverStyle;
+    private final DropShadow glow = new DropShadow(8, Color.web("#1E88E5"));
+    private boolean selected = false;
+
     public CardView(splendor.model.Card card, String reservedBy, boolean clickable, Runnable onClick) {
         setMinSize(108, 148);
         setMaxSize(108, 148);
@@ -39,9 +45,18 @@ public class CardView extends VBox {
         String borderColor = isReserved ? "#FF9800" : "#999";
         String bgColor     = isReserved ? "#FFF8E1" : "#FAFAFA";
         String cursor      = clickable  ? "hand"    : "default";
-        setStyle("-fx-border-color: " + borderColor + "; -fx-border-radius: 6; -fx-background-radius: 6; " +
-                 "-fx-background-color: " + bgColor + "; -fx-cursor: " + cursor + ";" +
-                 (!clickable ? " -fx-opacity: 0.75;" : ""));
+        String opacity     = !clickable ? " -fx-opacity: 0.75;" : "";
+        baseStyle  = "-fx-border-color: " + borderColor + "; -fx-border-radius: 6; -fx-background-radius: 6; " +
+                     "-fx-background-color: " + bgColor + "; -fx-cursor: " + cursor + ";" + opacity;
+        String hoverBorder = isReserved ? "#FF9800" : "#1E88E5";
+        hoverStyle = "-fx-border-color: " + hoverBorder + "; -fx-border-width: 2; -fx-border-radius: 6; " +
+                     "-fx-background-radius: 6; -fx-background-color: " + bgColor + "; -fx-cursor: " + cursor + ";" + opacity;
+        setStyle(baseStyle);
+
+        if (clickable) {
+            setOnMouseEntered(e -> { if (!selected) { setStyle(hoverStyle); setEffect(glow); } });
+            setOnMouseExited(e ->  { if (!selected) { setStyle(baseStyle);  setEffect(null); } });
+        }
 
         String hex    = COLOR_HEX.getOrDefault(card.getColor(), "#CCC");
         String symbol = GEM_SYMBOL.getOrDefault(card.getColor(), "?");
@@ -100,6 +115,18 @@ public class CardView extends VBox {
         if (onClick != null && clickable) {
             setOnMouseClicked(e -> onClick.run());
         }
+    }
+
+    public void select() {
+        selected = true;
+        setStyle(hoverStyle);
+        setEffect(glow);
+    }
+
+    public void deselect() {
+        selected = false;
+        setStyle(baseStyle);
+        setEffect(null);
     }
 
     // Gray placeholder for empty table slot

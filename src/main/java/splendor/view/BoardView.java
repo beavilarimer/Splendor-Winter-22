@@ -15,6 +15,7 @@ public class BoardView extends BorderPane {
 
     private final GameController controller;
     private Button takeChipsBtn;
+    private CardView selectedCard = null;
 
     public BoardView(GameController controller) {
         this.controller = controller;
@@ -86,7 +87,10 @@ public class BoardView extends BorderPane {
                     splendor.model.Player reservingPlayer = card.getReservedBy();
                     String reservedByName = reservingPlayer != null ? reservingPlayer.getName() : null;
                     boolean clickable = reservingPlayer == null || reservingPlayer == controller.currentPlayer();
-                    CardView cv = new CardView(card, reservedByName, clickable, () -> showCardPopup(card, level, s));
+                    CardView cv = new CardView(card, reservedByName, clickable, null);
+                    if (clickable) {
+                        cv.setOnMouseClicked(e -> { selectCard(cv); showCardPopup(card, level, s); });
+                    }
                     row.getChildren().add(cv);
                 } else {
                     row.getChildren().add(CardView.emptySlot());
@@ -136,6 +140,20 @@ public class BoardView extends BorderPane {
     }
 
     // -------------------------------------------------------------------------
+    // Card selection state
+    // -------------------------------------------------------------------------
+
+    private void selectCard(CardView cv) {
+        if (selectedCard != null) selectedCard.deselect();
+        selectedCard = cv;
+        cv.select();
+    }
+
+    private void deselectCard() {
+        if (selectedCard != null) { selectedCard.deselect(); selectedCard = null; }
+    }
+
+    // -------------------------------------------------------------------------
     // Card action popup
     // -------------------------------------------------------------------------
 
@@ -179,7 +197,10 @@ public class BoardView extends BorderPane {
 
         popup.getContent().add(box);
         popup.setAutoHide(true);
-        popup.show(getScene().getWindow());
+        popup.setOnHidden(e -> deselectCard());
+
+        javafx.geometry.Bounds centerBounds = getCenter().localToScreen(getCenter().getBoundsInLocal());
+        popup.show(getScene().getWindow(), centerBounds.getMaxX() - 210, centerBounds.getMinY()+170);
     }
 
     // -------------------------------------------------------------------------

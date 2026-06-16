@@ -158,6 +158,12 @@ public class Splendor {
                 }
             }
             player.clearReserved();
+            // Award the gold that was withheld at reservation time
+            if (chipBank[5] > 0 && player.getChipCount() < 10) {
+                chipBank[5]--;
+                player.updateGold(1);
+                player.updateChipCount(1);
+            }
         } else {
             table[level][slot] = (decks[level].getSize() > 0)
                 ? decks[level].removeCard()
@@ -175,12 +181,7 @@ public class Splendor {
 
         player.reserveCard(table[level][slot]);
         // Card stays on the table — not replaced
-
-        if (chipBank[5] > 0 && player.getChipCount() < 10) {
-            chipBank[5]--;
-            player.updateGold(1);
-            player.updateChipCount(1);
-        }
+        // Gold is awarded when the reserved card is bought, not at reservation time
         return true;
     }
 
@@ -189,10 +190,10 @@ public class Splendor {
     // -------------------------------------------------------------------------
 
     public boolean canAfford(Player player, Card card) {
-        int[] chipCost    = card.getChipCost();
-        int[] chips       = player.getChipTracker();
-        int[] cards       = player.getCardTracker();
-        int   goldNeeded  = 0;
+        int[] chipCost   = card.getChipCost();
+        int[] chips      = player.getChipTracker();
+        int[] cards      = player.getCardTracker();
+        int   goldNeeded = 0;
 
         for (int i = 0; i < 5; i++) {
             int effectiveCost = Math.max(0, chipCost[i] - cards[i]);
